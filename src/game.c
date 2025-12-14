@@ -2,8 +2,8 @@
 #include "gamestate.h"
 #include "input.h"
 #include "player.h"
+#include "raymath.h"
 #include "types.h"
-#include <stdio.h>
 
 void updateState(MainState* state, float deltaTime);
 Bool canPlayerTouch(Player* player, Ball* ball);
@@ -33,6 +33,12 @@ void updateState(MainState* state, float deltaTime)
 
 Bool canPlayerTouch(Player* player, Ball* ball)
 {
-    // TODO: stub
+    if (player == ball->lastHit && ball->state == IN_AIR) {
+        return FALSE;
+    }
+    Vector3 playerPosition = playerMidpoint(player);
+    if (Vector3DistanceSqr(playerPosition, ball->position) < 3) { // TODO: magic number
+        return TRUE;
+    }
     return FALSE;
 }

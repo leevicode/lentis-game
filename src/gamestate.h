@@ -8,7 +8,7 @@
 #include "types.h"
 #define TEAM_SIZE 2
 #define NUM_TEAMS 2
-#define NUM_CONTROLLERS 1 // TEAM_SIZE* NUM_TEAMS
+#define NUM_CONTROLLERS 2 // TEAM_SIZE* NUM_TEAMS
 #define GRAVITY 9.807
 typedef struct
 {
@@ -38,5 +38,5 @@ void hitBall(Player* playerWhoHit, Ball* ball);
 void throwBall(Ball* ball);
 void pickupBall(Player* player, Ball* ball);
 Team* getPlayerTeam(GameState* state, Player* player);
-
+void drawState(MainState* state, Camera* camera, Texture2D playerImage, Texture2D ballImage);
 #endif

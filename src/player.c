@@ -16,8 +16,8 @@ void updatePlayer(Player* player, Vector2 input, float deltaTime)
             input.y * deltaTime * speed });
     player->motion.y -= deltaTime * GRAVITY;
 
-    player->motion.x *= 1 - DRAG * deltaTime;
-    player->motion.z *= 1 - DRAG * deltaTime;
+    player->motion.x *= DRAG * deltaTime;
+    player->motion.z *= DRAG * deltaTime;
     player->position = Vector3Add(player->position, Vector3Scale(player->motion, deltaTime));
     if (player->position.y < 0) {
         player->position.y = 0;
@@ -33,4 +33,9 @@ void jump(Player* player)
     }
     player->state = E_IN_AIR;
     player->motion.y = 5;
+}
+
+Vector3 playerMidpoint(Player* player)
+{
+    return Vector3Add(player->position, (Vector3) { 0, PLAYER_HEIGHT / 2.0, 0 });
 }

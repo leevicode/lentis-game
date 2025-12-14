@@ -1,5 +1,6 @@
 #include "ball.h"
 #include "gamestate.h"
+#include "player.h"
 #include "raymath.h"
 #include <stdio.h>
 
@@ -29,7 +30,7 @@ void updateGroundedBall(Ball* ball, float deltaTime)
 
 void updateHeldBall(Ball* ball, float deltaTime)
 {
-    ball->position = ball->lastHit->position;
+    ball->position = playerMidpoint(ball->lastHit);
 }
 
 void updateAirBall(Ball* ball, float deltaTime)
@@ -54,13 +55,19 @@ void pickupBall(Player* player, Ball* ball)
 void throwBall(Ball* ball)
 {
     ball->state = IN_AIR;
-    ball->motion = Vector3Add(ball->lastHit->motion, (Vector3) { 0, 3, 0 });
+    ball->motion = Vector3Add(ball->lastHit->motion, (Vector3) { 0, 3, 0 }); // TODO: magic number
     ball->lastHit = NULL;
 }
 
 void hitBall(Player* playerWhoHit, Ball* ball)
 {
-    // TODO
+    ball->motion = Vector3Subtract(
+        ball->position,
+        playerMidpoint(playerWhoHit));
+    ball->motion = Vector3Scale(ball->motion, 5); // TODO: magic numbers
+    ball->motion.y += 4; // TODO <:^}
+    ball->state = IN_AIR;
+    ball->lastHit = playerWhoHit;
 }
 
 void interactBall(Player* player, Ball* ball)

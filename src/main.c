@@ -13,6 +13,10 @@ int main()
         &state.state.teams[0].players[0],
         getInputDevices(manager)[0]
     };
+    state.controllers[1] = (Controller) {
+        &state.state.teams[0].players[1],
+        getInputDevices(manager)[1]
+    };
 
     printf("hello world!\n");
     mainloop(&state);
@@ -25,8 +29,18 @@ void mainloop(MainState* state)
     const int screenHeight = 450;
     InputManager* manager = getManager();
     SetConfigFlags(FLAG_MSAA_4X_HINT); // Set MSAA 4X hint before windows creation
-
     InitWindow(screenWidth, screenHeight, "volley");
+    Texture2D playerImage = LoadTexture("resource/Standing.png");
+    Texture2D ballImage = LoadTexture("resource/Ball.png");
+
+    Camera3D camera = { 0 };
+    camera.position = (Vector3) { 0.0f, 13.0f, 13.0f }; // Camera position
+    camera.target = (Vector3) { 0.0f, 0.0f, 0.0f }; // Camera looking at point
+    camera.up = (Vector3) { 0.0f, 1.0f, 0.0f }; // Camera up vector (rotation towards target)
+    camera.fovy = 45.0f; // Camera field-of-view Y
+    camera.projection = CAMERA_PERSPECTIVE;
+    state->state.ball.position.y = 5;
+    state->state.ball.motion = (Vector3) { 4, 3, -3 };
     SetTargetFPS(60);
     while (!WindowShouldClose()) {
         float deltaTime = GetFrameTime();
@@ -35,12 +49,9 @@ void mainloop(MainState* state)
         // TODO: implement proper rendering
         BeginDrawing();
         ClearBackground(WHITE);
-        Ball* ball = &state->state.ball;
-        DrawCircle(ball->position.x, ball->position.z, 100.0, RED);
-        for (int i = 0; i < NUM_CONTROLLERS; i++) {
-            Player* player = state->controllers[i].player;
-            DrawCircle(player->position.x, player->position.z, 50, BLUE);
-        }
+        BeginMode3D(camera);
+        drawState(state, &camera, playerImage, ballImage);
+        EndMode3D();
         EndDrawing();
     }
 }
