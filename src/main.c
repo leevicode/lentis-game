@@ -29,13 +29,18 @@ void mainloop(MainState* state)
     InitWindow(screenWidth, screenHeight, "volley");
     SetTargetFPS(60);
     while (!WindowShouldClose()) {
-        InputDevice device = state->controllers[0].device;
-        Player* player = state->controllers[0].player;
-        Vector2 input = getMovement(NULL, device);
-        player->position = Vector3Add(player->position, (Vector3) { input.x, input.y, 0 });
+        float deltaTime = GetFrameTime();
+        updateState(state, deltaTime);
+
+        // TODO: implement proper rendering
         BeginDrawing();
         ClearBackground(WHITE);
-        DrawCircle(player->position.x, player->position.y, 100.0, RED);
+        Ball* ball = &state->state.ball;
+        DrawCircle(ball->position.x, ball->position.z, 100.0, RED);
+        for (int i = 0; i < NUM_CONTROLLERS; i++) {
+            Player* player = state->controllers[i].player;
+            DrawCircle(player->position.x, player->position.z, 50, BLUE);
+        }
         EndDrawing();
     }
 }

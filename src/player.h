@@ -4,7 +4,7 @@
 #include "types.h"
 #define WALK_SPEED 180
 #define AIR_SPEED 60
-
+#define DRAG 0.001
 typedef enum {
     E_STANDING,
     E_WALKING,
@@ -17,7 +17,8 @@ typedef struct {
     PlayerState state;
 } Player;
 
-void updatePlayer(Player* m_player, float deltaTime);
+void updatePlayer(Player* player, Vector2 input, float deltaTime);
+void jump(Player* player);
 void drawPlayer(Player* player);
 
 #endif
