@@ -6,6 +6,7 @@
 
 void drawState(MainState* state, Camera* camera, Texture2D playerImage, Texture2D ballImage)
 {
+    camera->target = Vector3Scale(state->state.ball.position, 0.4);
     DrawPlane(Vector3Zero(), (Vector2) { 20, 10 }, BEIGE);
     for (int i = 0; i < NUM_CONTROLLERS; i++) {
         Player* player = state->controllers[i].player;
