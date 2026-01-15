@@ -38,6 +38,6 @@ void hitBall(Player* playerWhoHit, Ball* ball, Vector3 dir);
 void throwBall(Ball* ball);
 void pickupBall(Player* player, Ball* ball);
 Team* getPlayerTeam(GameState* state, Player* player);
-void drawState(MainState* state, Camera* camera);
+void drawState(MainState* state, Camera* camera, float deltaTime);
 void loadResources();
 #endif

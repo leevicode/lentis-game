@@ -48,7 +48,7 @@ void mainloop(MainState* state)
         BeginDrawing();
         ClearBackground(WHITE);
         BeginMode3D(camera);
-        drawState(state, &camera);
+        drawState(state, &camera, deltaTime);
         EndMode3D();
         EndDrawing();
     }
