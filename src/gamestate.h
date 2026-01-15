@@ -33,10 +33,11 @@ typedef struct
 
 void updateState(MainState* state, float deltaTime);
 Bool canPlayerTouch(Player* player, Ball* ball);
-void interactBall(Player* player, Ball* ball);
-void hitBall(Player* playerWhoHit, Ball* ball);
+void interactBall(Player* player, Ball* ball, Vector3 dir);
+void hitBall(Player* playerWhoHit, Ball* ball, Vector3 dir);
 void throwBall(Ball* ball);
 void pickupBall(Player* player, Ball* ball);
 Team* getPlayerTeam(GameState* state, Player* player);
-void drawState(MainState* state, Camera* camera, Texture2D playerImage, Texture2D ballImage);
+void drawState(MainState* state, Camera* camera);
+void loadResources();
 #endif

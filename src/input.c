@@ -1,9 +1,12 @@
 #include "input.h"
+#include "math.h"
 #include "raylib.h"
+#include "raymath.h"
 #define NUM_INPUTS 5
 
 #define DEVICE_KEYBOARD -1
 
+float max(float a, float b);
 int num_devices = 1;
 bool isInitialized = FALSE;
 InputDevice devices[NUM_INPUTS];
@@ -47,7 +50,7 @@ Bool isHitPressed(InputManager* manager, InputDevice device)
     if (device == DEVICE_KEYBOARD) {
         return IsKeyPressed(KEY_X);
     }
-    return IsGamepadButtonPressed(device, GAMEPAD_BUTTON_RIGHT_FACE_LEFT);
+    return IsGamepadButtonPressed(device, GAMEPAD_BUTTON_RIGHT_TRIGGER_1);
 }
 
 Vector2 getMovement(InputManager* manager, InputDevice device)
@@ -64,4 +67,29 @@ Vector2 getMovement(InputManager* manager, InputDevice device)
         GetGamepadAxisMovement(device, GAMEPAD_AXIS_LEFT_X),
         GetGamepadAxisMovement(device, GAMEPAD_AXIS_LEFT_Y),
     };
+}
+
+Vector3 getAim(InputManager* manager, InputDevice device)
+{
+    if (device == DEVICE_KEYBOARD) {
+        return (Vector3) {
+            0,
+            1,
+            0
+        };
+    }
+    float x = GetGamepadAxisMovement(device, GAMEPAD_AXIS_RIGHT_X);
+    float z = GetGamepadAxisMovement(device, GAMEPAD_AXIS_RIGHT_Y);
+    float y = sqrt(max(0,
+        1 - x * x - z * z));
+    return (Vector3) {
+        x,
+        y,
+        z
+    };
+}
+
+float max(float x, float y)
+{
+    return x > y ? x : y;
 }

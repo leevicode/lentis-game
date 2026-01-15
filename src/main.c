@@ -1,9 +1,9 @@
 #include "gamestate.h"
 #include "input.h"
 #include "raylib.h"
-#include "raymath.h"
 #include "stdio.h"
 
+// TODO: move functionality from here to game.c
 void mainloop(MainState* state);
 int main()
 {
@@ -17,7 +17,8 @@ int main()
         &state.state.teams[0].players[1],
         getInputDevices(manager)[1]
     };
-
+    state.state.ball.position.y = 5;
+    state.state.ball.motion = (Vector3) { 4, 3, -3 };
     printf("hello world!\n");
     mainloop(&state);
     return 0;
@@ -30,17 +31,14 @@ void mainloop(MainState* state)
     InputManager* manager = getManager();
     SetConfigFlags(FLAG_MSAA_4X_HINT); // Set MSAA 4X hint before windows creation
     InitWindow(screenWidth, screenHeight, "volley");
-    Texture2D playerImage = LoadTexture("resource/Standing.png");
-    Texture2D ballImage = LoadTexture("resource/Ball.png");
-
+    // Initialize camera
     Camera3D camera = { 0 };
     camera.position = (Vector3) { 0.0f, 13.0f, 18.0f }; // Camera position
     camera.target = (Vector3) { 0.0f, 0.0f, 0.0f }; // Camera looking at point
     camera.up = (Vector3) { 0.0f, 1.0f, 0.0f }; // Camera up vector (rotation towards target)
     camera.fovy = 38.0f; // Camera field-of-view Y
     camera.projection = CAMERA_PERSPECTIVE;
-    state->state.ball.position.y = 5;
-    state->state.ball.motion = (Vector3) { 4, 3, -3 };
+    loadResources();
     SetTargetFPS(60);
     while (!WindowShouldClose()) {
         float deltaTime = GetFrameTime();
@@ -50,7 +48,7 @@ void mainloop(MainState* state)
         BeginDrawing();
         ClearBackground(WHITE);
         BeginMode3D(camera);
-        drawState(state, &camera, playerImage, ballImage);
+        drawState(state, &camera);
         EndMode3D();
         EndDrawing();
     }

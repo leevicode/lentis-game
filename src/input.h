@@ -19,5 +19,6 @@ int getNumDevices(InputManager* manager);
 Bool isJumpPressed(InputManager* manager, InputDevice device);
 Bool isHitPressed(InputManager* manager, InputDevice device);
 Vector2 getMovement(InputManager* manager, InputDevice device);
+Vector3 getAim(InputManager* manager, InputDevice device);
 
 #endif

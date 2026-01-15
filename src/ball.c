@@ -1,6 +1,7 @@
 #include "ball.h"
 #include "gamestate.h"
 #include "player.h"
+#include "raylib.h"
 #include "raymath.h"
 #include <stdio.h>
 
@@ -55,29 +56,30 @@ void pickupBall(Player* player, Ball* ball)
 void throwBall(Ball* ball)
 {
     ball->state = IN_AIR;
-    ball->motion = Vector3Add(ball->lastHit->motion, (Vector3) { 0, 3, 0 }); // TODO: magic number
+    ball->motion = Vector3Add(
+        Vector3Scale(ball->lastHit->motion, 0.3),
+        (Vector3) { 0, 9, 0 }); // TODO: magic number
     ball->lastHit = NULL;
 }
 
-void hitBall(Player* playerWhoHit, Ball* ball)
+void hitBall(Player* playerWhoHit, Ball* ball, Vector3 dir)
 {
-    ball->motion = Vector3Subtract(
-        ball->position,
-        playerMidpoint(playerWhoHit));
-    ball->motion = Vector3Scale(ball->motion, 5); // TODO: magic numbers
-    ball->motion.y += 4; // TODO <:^}
+    float velocity = Vector3Length(ball->motion);
+    ball->motion = Vector3Add(
+        Vector3Scale(dir, velocity),
+        Vector3Scale(playerWhoHit->motion, 0.3));
     ball->state = IN_AIR;
     ball->lastHit = playerWhoHit;
 }
 
-void interactBall(Player* player, Ball* ball)
+void interactBall(Player* player, Ball* ball, Vector3 dir)
 {
     switch (ball->state) {
     case ON_GROUND:
         pickupBall(player, ball);
         break;
     case IN_AIR:
-        hitBall(player, ball);
+        hitBall(player, ball, dir);
         break;
     case HELD:
         throwBall(ball);

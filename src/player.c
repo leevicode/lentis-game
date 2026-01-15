@@ -32,7 +32,7 @@ void jump(Player* player)
         return;
     }
     player->state = E_IN_AIR;
-    player->motion.y = 5;
+    player->motion.y = 7;
 }
 
 Vector3 playerMidpoint(Player* player)
