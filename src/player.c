@@ -15,9 +15,10 @@ void updatePlayer(Player* player, Vector2 input, float deltaTime)
             0,
             input.y * deltaTime * speed });
     player->motion.y -= deltaTime * GRAVITY;
+    Vector3 horizontalMotion = Vector3Multiply(player->motion, (Vector3) { 1, 0, 1 });
+    Vector3 drag = Vector3Scale(horizontalMotion, -1.0 * DRAG * deltaTime);
+    player->motion = Vector3Add(player->motion, drag);
 
-    player->motion.x *= DRAG * deltaTime;
-    player->motion.z *= DRAG * deltaTime;
     player->position = Vector3Add(player->position, Vector3Scale(player->motion, deltaTime));
     if (player->position.y < 0) {
         player->position.y = 0;

@@ -3,9 +3,9 @@
 #define PLAYER
 #include "raylib.h"
 #include "types.h"
-#define WALK_SPEED 100
-#define AIR_SPEED 66
-#define DRAG 50
+#define WALK_SPEED 80
+#define AIR_SPEED 40
+#define DRAG 5
 #define PLAYER_HEIGHT 2
 typedef enum {
     E_STANDING,
