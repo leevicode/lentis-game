@@ -1,7 +1,6 @@
 #include "input.h"
 #include "math.h"
 #include "raylib.h"
-#include "raymath.h"
 #define NUM_INPUTS 5
 
 #define DEVICE_KEYBOARD -1

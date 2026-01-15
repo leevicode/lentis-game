@@ -1,9 +1,7 @@
 #include "player.h"
-#include "ball.h"
 #include "gamestate.h"
 #include "raylib.h"
 #include "raymath.h"
-#include <stdio.h>
 
 void updatePlayer(Player* player, Vector2 input, float deltaTime)
 {
