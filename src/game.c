@@ -13,11 +13,14 @@ Team* getPlayerTeam(GameState* state, Player* player);
 
 void updateState(MainState* state, float deltaTime)
 {
-    InputManager* manager = state->manager;
+    InputManager* manager = getManager();
     Ball* ball = &state->state.ball;
-    for (int i = 0; i < NUM_CONTROLLERS; i++) {
+    for (int i = 0; i < MAX_PLAYERS; i++) {
         InputDevice device = state->controllers[i].device;
         Player* player = state->controllers[i].player;
+        if (!player) {
+            continue;
+        }
         if (isJumpPressed(manager, device)) {
             jump(player);
         }

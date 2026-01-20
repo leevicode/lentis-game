@@ -15,7 +15,6 @@ typedef void InputManager;
 
 InputManager* getManager();
 InputDevice* getInputDevices(InputManager* manager);
-int getNumDevices(InputManager* manager);
 Bool isJumpPressed(InputManager* manager, InputDevice device);
 Bool isHitPressed(InputManager* manager, InputDevice device);
 Vector2 getMovement(InputManager* manager, InputDevice device);

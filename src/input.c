@@ -1,14 +1,18 @@
 #include "input.h"
+#include "gamestate.h"
 #include "math.h"
 #include "raylib.h"
-#define NUM_INPUTS 5
-
+#include "stdio.h"
 #define DEVICE_KEYBOARD -1
+/***
+ * TODO: inputManager should be reworked entirely.
+ * not sure if it makes sense at all.
+ *
+ */
 
 float max(float a, float b);
-int num_devices = 1;
 bool isInitialized = FALSE;
-InputDevice devices[NUM_INPUTS];
+InputDevice devices[] = { DEVICE_KEYBOARD, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
 Bool keypad1_isjumpPressed()
 {
     return IsGamepadButtonPressed(1, GAMEPAD_BUTTON_RIGHT_FACE_DOWN);
@@ -16,23 +20,10 @@ Bool keypad1_isjumpPressed()
 
 InputManager* getManager()
 {
-    if (isInitialized) {
-        return &getManager;
-    }
-    devices[0] = DEVICE_KEYBOARD;
-    for (int i = 0; i < NUM_INPUTS; i++) {
-        if (IsGamepadAvailable(i)) {
-            devices[num_devices] = i;
-            num_devices++;
-        }
-    }
-
     return &getManager;
 }
 
 InputDevice* getInputDevices(InputManager* manager) { return devices; }
-
-int getNumDevices(InputManager* manager) { return num_devices; }
 
 Bool isJumpPressed(InputManager* manager, InputDevice device)
 {
