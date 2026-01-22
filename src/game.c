@@ -5,16 +5,15 @@
 #include "raymath.h"
 #include "types.h"
 
-void updateState(MainState* state, float deltaTime);
+void updateState(GameState* state, float deltaTime);
 Bool canPlayerTouch(Player* player, Ball* ball);
 void throwBall(Ball* ball);
 void pickupBall(Player* player, Ball* ball);
-Team* getPlayerTeam(GameState* state, Player* player);
 
-void updateState(MainState* state, float deltaTime)
+void updateState(GameState* state, float deltaTime)
 {
     InputManager* manager = getManager();
-    Ball* ball = &state->state.ball;
+    Ball* ball = &state->ball;
     for (int i = 0; i < MAX_PLAYERS; i++) {
         InputDevice device = state->controllers[i].device;
         Player* player = state->controllers[i].player;

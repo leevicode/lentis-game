@@ -14,9 +14,9 @@ void loadResources()
     backgroundModel = LoadModel("resource/Untitled.glb");
 }
 
-void drawState(MainState* state, Camera* camera, float deltaTime)
+void drawState(GameState* state, Camera* camera, float deltaTime)
 {
-    Vector3 ballMidPoint = Vector3Multiply(state->state.ball.position, (Vector3) { 1, 0.5, 1 });
+    Vector3 ballMidPoint = Vector3Multiply(state->ball.position, (Vector3) { 1, 0.5, 1 });
     camera->target = Vector3Add(
         Vector3Scale(camera->target, 1 - (2 * deltaTime)),
         Vector3Scale(ballMidPoint, 2 * deltaTime));
@@ -27,9 +27,9 @@ void drawState(MainState* state, Camera* camera, float deltaTime)
         if (!player) {
             continue;
         }
-        DrawBillboard(*camera, playerTexture, playerMidpoint(player), PLAYER_HEIGHT, GREEN);
+        DrawBillboard(*camera, playerTexture, playerMidpoint(player), PLAYER_HEIGHT, player->team->color);
         DrawSphere(Vector3Multiply(player->position, (Vector3) { 1, 0, 1 }), 0.4, BLACK);
     }
-    DrawSphere(Vector3Multiply(state->state.ball.position, (Vector3) { 1, 0, 1 }), 0.4, BLACK);
-    DrawBillboard(*camera, ballTexture, state->state.ball.position, 1, WHITE);
+    DrawSphere(Vector3Multiply(state->ball.position, (Vector3) { 1, 0, 1 }), 0.4, BLACK);
+    DrawBillboard(*camera, ballTexture, state->ball.position, 1, WHITE);
 }

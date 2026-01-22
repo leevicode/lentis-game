@@ -1,17 +1,7 @@
 #ifndef INPUTS
 #define INPUTS
-#include "player.h"
 #include "raylib.h"
 #include "types.h"
-
-typedef int InputDevice;
-
-typedef struct {
-    Player* player;
-    InputDevice device;
-} Controller;
-
-typedef void InputManager;
 
 InputManager* getManager();
 InputDevice* getInputDevices(InputManager* manager);

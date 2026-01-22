@@ -2,27 +2,30 @@
 #include "input.h"
 #include "raylib.h"
 #include "stdio.h"
-#include <iso646.h>
+#include "stdlib.h"
+#include "types.h"
 
 // TODO: move functionality from here to game.c
-void mainloop(MainState* state);
+void mainloop(GameState* state, Camera3D camera);
+void setupTeams(GameState* state);
+Camera3D initializeGame(GameState* state);
 int main()
 {
-    MainState state = { 0 };
-    InputManager* manager = getManager();
-    state.state.ball.position.y = 5;
-    state.state.ball.motion = (Vector3) { 4, 3, -3 };
+    GameState state = { 0 };
+    state.manager = getManager();
+    state.ball.position.y = 5;
+    state.ball.motion = (Vector3) { 4, 3, -3 };
     printf("hello world!\n");
-    mainloop(&state);
+    Camera3D camera = initializeGame(&state);
+    setupTeams(&state);
+    mainloop(&state, camera);
     return 0;
 }
 
-void resolvePlayers(MainState* state);
-Camera3D initializeGame(MainState* state)
+Camera3D initializeGame(GameState* state)
 {
     const int screenWidth = 800;
     const int screenHeight = 450;
-    InputManager* manager = getManager();
     SetConfigFlags(FLAG_MSAA_4X_HINT); // Set MSAA 4X hint before windows creation
     InitWindow(screenWidth, screenHeight, "volley");
     // Initialize camera
@@ -34,23 +37,18 @@ Camera3D initializeGame(MainState* state)
     camera.projection = CAMERA_PERSPECTIVE;
     loadResources();
     SetTargetFPS(60);
-    resolvePlayers(state);
     return camera;
 }
 
-Player newPlayer()
+void setupTeams(GameState* state)
 {
-    Player player = { 0 };
-    return player;
-}
-void resolvePlayers(MainState* state)
-{
-    InputManager* manager = getManager();
+    InputManager* manager = state->manager;
     InputDevice* devices = getInputDevices(manager);
+    state->teams[0] = (Team) { 0, RED };
+    state->teams[1] = (Team) { 0, BLUE };
     WindowShouldClose();
-    state->state.players[0] = newPlayer();
     state->controllers[0] = (Controller) {
-        &state->state.players[0],
+        NULL,
         devices[0]
     };
     while (!IsKeyPressed(KEY_ENTER)) {
@@ -61,22 +59,42 @@ void resolvePlayers(MainState* state)
         for (int i = 0; i < MAX_PLAYERS; i++) {
             InputDevice device = devices[i];
             Player** controllerPlayer = &(state->controllers[i].player);
-            Player* statePlayer = &(state->state.players[i]);
 
             if (devices[i] != -1 && !IsGamepadAvailable(devices[i])) {
                 continue;
             }
             char string[10000];
+
             if (isJumpPressed(manager, devices[i])) {
-                state->state.players[i] = newPlayer();
-                *controllerPlayer = statePlayer;
-                state->controllers[i].device = devices[i];
+                if (!*controllerPlayer) {
+                    *controllerPlayer = malloc(sizeof(Player));
+                    (*controllerPlayer)->team = state->teams;
+                    state->controllers[i].device = devices[i];
+                }
             }
+
             if (isHitPressed(manager, devices[i])) {
+                free(*controllerPlayer);
                 *controllerPlayer = NULL;
             }
+
+            // change color
+            if (*controllerPlayer) {
+                float x = getMovement(manager, device).x;
+                if (x > 0.2 || x < -0.2) {
+                    (*controllerPlayer)->team = (*controllerPlayer)->team == state->teams ? state->teams + 1 : state->teams;
+                }
+            }
+
             sprintf(string, "controller %d", device);
-            DrawText(string, 20, 10 + 20 * i, 20, ORANGE);
+            Color color;
+            if (*controllerPlayer && (*controllerPlayer)->team) {
+                color = (*controllerPlayer)->team->color;
+            } else {
+                color = BLACK;
+            }
+
+            DrawText(string, 20, 10 + 20 * i, 20, color);
             if (state->controllers[i].player) {
                 DrawText("+", 5, 10 + 20 * i, 20, GREEN);
             }
@@ -86,10 +104,8 @@ void resolvePlayers(MainState* state)
     return;
 }
 
-void mainloop(MainState* state)
+void mainloop(GameState* state, Camera3D camera)
 {
-    Camera3D camera = initializeGame(state);
-
     while (!WindowShouldClose()) {
         float deltaTime = GetFrameTime();
         updateState(state, deltaTime);
