@@ -12,6 +12,13 @@ void pickupBall(Player* player, Ball* ball);
 
 void updateState(GameState* state, float deltaTime)
 {
+    if (state->freezeFrames > 0) {
+        state->freezeFrames -= deltaTime;
+        if (state->freezeFrames < 0) {
+            state->freezeFrames = 0;
+        }
+        return;
+    }
     InputManager* manager = getManager();
     Ball* ball = &state->ball;
     for (int i = 0; i < MAX_PLAYERS; i++) {
@@ -25,10 +32,12 @@ void updateState(GameState* state, float deltaTime)
         }
         updatePlayer(player, getMovement(manager, device), deltaTime);
         if (isHitPressed(manager, device) && canPlayerTouch(player, ball)) {
-            interactBall(
-                player,
-                ball,
-                getAim(manager, device));
+            if (interactBall(
+                    player,
+                    ball,
+                    getAim(manager, device))) {
+                state->freezeFrames = FREEZE_FRAMES;
+            }
         }
     }
     updateBall(ball, deltaTime);

@@ -13,10 +13,6 @@
 float max(float a, float b);
 bool isInitialized = FALSE;
 InputDevice devices[] = { DEVICE_KEYBOARD, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
-Bool keypad1_isjumpPressed()
-{
-    return IsGamepadButtonPressed(1, GAMEPAD_BUTTON_RIGHT_FACE_DOWN);
-}
 
 InputManager* getManager()
 {

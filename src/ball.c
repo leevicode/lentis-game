@@ -3,6 +3,7 @@
 #include "player.h"
 #include "raylib.h"
 #include "raymath.h"
+#include "types.h"
 #include <stdio.h>
 
 void updateGroundedBall(Ball* ball, float deltaTime);
@@ -72,17 +73,17 @@ void hitBall(Player* playerWhoHit, Ball* ball, Vector3 dir)
     ball->lastHit = playerWhoHit;
 }
 
-void interactBall(Player* player, Ball* ball, Vector3 dir)
+Bool interactBall(Player* player, Ball* ball, Vector3 dir)
 {
     switch (ball->state) {
     case ON_GROUND:
         pickupBall(player, ball);
-        break;
+        return FALSE;
     case IN_AIR:
         hitBall(player, ball, dir);
-        break;
+        return TRUE;
     case HELD:
         throwBall(ball);
-        break;
+        return FALSE;
     }
 }

@@ -67,6 +67,7 @@ typedef struct
     Ball ball;
     InputManager* manager;
     Controller controllers[MAX_PLAYERS];
+    float freezeFrames;
 } GameState;
 
 #endif
