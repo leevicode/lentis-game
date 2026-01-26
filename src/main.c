@@ -9,6 +9,7 @@
 void mainloop(GameState* state, Camera3D camera);
 void setupTeams(GameState* state);
 Camera3D initializeGame(GameState* state);
+Player newPlayer();
 int main()
 {
     GameState state = { 0 };
@@ -30,10 +31,10 @@ Camera3D initializeGame(GameState* state)
     InitWindow(screenWidth, screenHeight, "volley");
     // Initialize camera
     Camera3D camera = { 0 };
-    camera.position = (Vector3) { 0.0f, 13.0f, 18.0f }; // Camera position
+    camera.position = (Vector3) { 0.0f, 23.0f, 30.0f }; // Camera position
     camera.target = (Vector3) { 0.0f, 0.0f, 0.0f }; // Camera looking at point
     camera.up = (Vector3) { 0.0f, 1.0f, 0.0f }; // Camera up vector (rotation towards target)
-    camera.fovy = 38.0f; // Camera field-of-view Y
+    camera.fovy = 30.0f; // Camera field-of-view Y
     camera.projection = CAMERA_PERSPECTIVE;
     loadResources();
     SetTargetFPS(60);
@@ -55,11 +56,9 @@ void setupTeams(GameState* state)
         WindowShouldClose();
         BeginDrawing();
         ClearBackground(WHITE);
-
         for (int i = 0; i < MAX_PLAYERS; i++) {
             InputDevice device = devices[i];
             Player** controllerPlayer = &(state->controllers[i].player);
-
             if (devices[i] != -1 && !IsGamepadAvailable(devices[i])) {
                 continue;
             }
@@ -68,12 +67,13 @@ void setupTeams(GameState* state)
             if (isJumpPressed(manager, devices[i])) {
                 if (!*controllerPlayer) {
                     *controllerPlayer = malloc(sizeof(Player));
+                    **controllerPlayer = newPlayer();
                     (*controllerPlayer)->team = state->teams;
                     state->controllers[i].device = devices[i];
                 }
             }
 
-            if (isHitPressed(manager, devices[i])) {
+            if (isHitPressed(manager, devices[i]) && *controllerPlayer) {
                 free(*controllerPlayer);
                 *controllerPlayer = NULL;
             }
@@ -118,4 +118,10 @@ void mainloop(GameState* state, Camera3D camera)
         EndMode3D();
         EndDrawing();
     }
+}
+
+Player newPlayer()
+{
+    Player p = { 0 };
+    return p;
 }
