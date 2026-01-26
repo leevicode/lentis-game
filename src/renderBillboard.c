@@ -20,6 +20,14 @@ void drawState(GameState* state, Camera* camera, float deltaTime)
     camera->target = Vector3Add(
         Vector3Scale(camera->target, 1 - (2 * deltaTime)),
         Vector3Scale(ballMidPoint, 2 * deltaTime));
+    float distance = Vector3Distance(
+        state->ball.position,
+        Vector3Multiply(
+            state->ball.position,
+            (Vector3) { 1, 0, 1 }));
+    distance /= 10;
+    distance *= distance;
+    camera->fovy = 30.0 - 11.0 / (distance + 1);
     DrawModel(backgroundModel, Vector3Zero(), 10, WHITE);
     DrawPlane(Vector3Zero(), (Vector2) { 20, 10 }, BEIGE);
     for (int i = 0; i < MAX_PLAYERS; i++) {

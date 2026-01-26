@@ -5,7 +5,7 @@
 #include "raylib.h"
 #include "types.h"
 
-#define FREEZE_FRAMES 0.1f
+#define FREEZE_FRAMES 0.2f
 void updateState(GameState* state, float deltaTime);
 Bool canPlayerTouch(Player* player, Ball* ball);
 Bool interactBall(Player* player, Ball* ball, Vector3 dir);

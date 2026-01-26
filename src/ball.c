@@ -59,7 +59,7 @@ void throwBall(Ball* ball)
     ball->state = IN_AIR;
     ball->motion = Vector3Add(
         Vector3Scale(ball->lastHit->motion, 0.3),
-        (Vector3) { 0, 9, 0 }); // TODO: magic number
+        (Vector3) { 0, 13, 0 }); // TODO: magic number
     ball->lastHit = NULL;
 }
 
