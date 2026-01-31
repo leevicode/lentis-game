@@ -2,6 +2,7 @@
 #include "gamestate.h"
 #include "input.h"
 #include "player.h"
+#include "raylib.h"
 #include "raymath.h"
 #include "types.h"
 
@@ -40,7 +41,21 @@ void updateState(GameState* state, float deltaTime)
             }
         }
     }
+    Vector3 previousPosition = ball->position;
     updateBall(ball, deltaTime);
+    Ray ballTrajectory = (Ray) {
+        previousPosition,
+        Vector3Subtract(ball->position, previousPosition)
+    };
+    RayCollision collision = GetRayCollisionBox(ballTrajectory, state->net);
+    if (collision.hit && collision.distance < 1) { // check if the ray collision is close enough that the ball actually also hits
+        ball->motion = Vector3Add(
+            ball->motion,
+            Vector3Scale(
+                collision.normal,
+                Vector3Length(ball->motion) / 2.0));
+        ball->position = previousPosition;
+    }
 }
 
 Bool canPlayerTouch(Player* player, Ball* ball)

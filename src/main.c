@@ -13,9 +13,16 @@ Player newPlayer();
 int main()
 {
     GameState state = { 0 };
+    state.net = (BoundingBox) {
+        (Vector3) { -0.2, 0, -5 },
+        (Vector3) { 0.2, 3, 5 }
+    };
     state.manager = getManager();
-    state.ball.position.y = 5;
-    state.ball.motion = (Vector3) { 4, 3, -3 };
+    state.ball.position = (Vector3) { -0.7, 3.5, -1 };
+    state.ball.motion = (Vector3) { 1.4, 0.1, -0.1 };
+    state.ball.position = (Vector3) { -7, 1, -1 };
+    state.ball.motion = (Vector3) { 10, 5, -3 };
+
     printf("hello world!\n");
     Camera3D camera = initializeGame(&state);
     setupTeams(&state);
@@ -101,6 +108,7 @@ void setupTeams(GameState* state)
         }
         EndDrawing();
     }
+    ToggleBorderlessWindowed();
     return;
 }
 

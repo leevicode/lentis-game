@@ -30,6 +30,7 @@ void drawState(GameState* state, Camera* camera, float deltaTime)
     camera->fovy = 30.0 - 11.0 / (distance + 1);
     DrawModel(backgroundModel, Vector3Zero(), 10, WHITE);
     DrawPlane(Vector3Zero(), (Vector2) { 20, 10 }, BEIGE);
+    DrawBoundingBox(state->net, ORANGE);
     for (int i = 0; i < MAX_PLAYERS; i++) {
         Player* player = state->controllers[i].player;
         if (!player) {

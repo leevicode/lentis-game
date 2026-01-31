@@ -68,6 +68,7 @@ typedef struct
     InputManager* manager;
     Controller controllers[MAX_PLAYERS];
     float freezeFrames;
+    BoundingBox net;
 } GameState;
 
 #endif
