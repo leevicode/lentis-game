@@ -3,6 +3,7 @@
 #include "player.h"
 #include "raylib.h"
 #include "raymath.h"
+#include "types.h"
 
 Texture2D playerTexture;
 Texture2D ballTexture;
@@ -31,6 +32,11 @@ void drawState(GameState* state, Camera* camera, float deltaTime)
     DrawModel(backgroundModel, Vector3Zero(), 10, WHITE);
     DrawPlane(Vector3Zero(), (Vector2) { 20, 10 }, BEIGE);
     DrawBoundingBox(state->net, ORANGE);
+
+    for (int i = 0; i < NUM_TEAMS; i++) {
+        DrawBoundingBox(state->teams[i].playerBounds, state->teams[i].color);
+        DrawBoundingBox(state->teams[i].teamBounds, PURPLE);
+    }
     for (int i = 0; i < MAX_PLAYERS; i++) {
         Player* player = state->controllers[i].player;
         if (!player) {

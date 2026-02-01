@@ -10,6 +10,8 @@ void updateState(GameState* state, float deltaTime);
 Bool canPlayerTouch(Player* player, Ball* ball);
 void throwBall(Ball* ball);
 void pickupBall(Player* player, Ball* ball);
+Bool isInBounds(Vector3 p, BoundingBox b);
+void transformToInBounds(Vector3* p, BoundingBox b);
 
 void updateState(GameState* state, float deltaTime)
 {
@@ -31,6 +33,7 @@ void updateState(GameState* state, float deltaTime)
         if (isJumpPressed(manager, device)) {
             jump(player);
         }
+        Vector3 previousPosition = player->position;
         updatePlayer(player, getMovement(manager, device), deltaTime);
         if (isHitPressed(manager, device) && canPlayerTouch(player, ball)) {
             if (interactBall(
@@ -40,6 +43,7 @@ void updateState(GameState* state, float deltaTime)
                 state->freezeFrames = FREEZE_FRAMES;
             }
         }
+        transformToInBounds(&player->position, player->team->playerBounds);
     }
     Vector3 previousPosition = ball->position;
     updateBall(ball, deltaTime);
@@ -68,4 +72,24 @@ Bool canPlayerTouch(Player* player, Ball* ball)
         return TRUE;
     }
     return FALSE;
+}
+
+Bool isInBounds(Vector3 p, BoundingBox b)
+{
+    return b.min.x <= p.x
+        && b.min.y <= p.y
+        && b.min.z <= p.z
+        && b.max.x >= p.x
+        && b.max.y >= p.y
+        && b.max.z >= p.z;
+}
+
+void transformToInBounds(Vector3* p, BoundingBox b)
+{
+    p->x = b.min.x <= p->x ? p->x : b.min.x;
+    p->y = b.min.y <= p->y ? p->y : b.min.y;
+    p->z = b.min.z <= p->z ? p->z : b.min.z;
+    p->x = b.max.x >= p->x ? p->x : b.max.x;
+    p->y = b.max.y >= p->y ? p->y : b.max.y;
+    p->z = b.max.z >= p->z ? p->z : b.max.z;
 }

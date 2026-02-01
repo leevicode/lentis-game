@@ -25,6 +25,8 @@ typedef struct
 {
     unsigned points;
     Color color;
+    BoundingBox playerBounds;
+    BoundingBox teamBounds;
 } Team;
 
 typedef enum {

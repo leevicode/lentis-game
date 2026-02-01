@@ -54,6 +54,24 @@ void setupTeams(GameState* state)
     InputDevice* devices = getInputDevices(manager);
     state->teams[0] = (Team) { 0, RED };
     state->teams[1] = (Team) { 0, BLUE };
+    state->teams[0].teamBounds = (BoundingBox) {
+        (Vector3) { -10, -0.3, -5 },
+        (Vector3) { 0, 3, 5 }
+    };
+    state->teams[0].playerBounds = (BoundingBox) {
+        (Vector3) { -14, -0.3, -8 },
+        (Vector3) { 0, 14, 8 }
+    };
+
+    state->teams[1].teamBounds = (BoundingBox) {
+        (Vector3) { 0, -0.3, -5 },
+        (Vector3) { 10, 3, 5 }
+    };
+    state->teams[1].playerBounds = (BoundingBox) {
+        (Vector3) { 0, -0.3, -8 },
+        (Vector3) { 14, 10, 8 }
+    };
+
     WindowShouldClose();
     state->controllers[0] = (Controller) {
         NULL,
