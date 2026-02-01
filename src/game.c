@@ -119,7 +119,6 @@ Team* resolveWinner(Team* teams, Ball* ball)
 void endRound(GameState* state)
 {
     Team* winningTeam = resolveWinner(state->teams, &state->ball);
-    Team* losingTeam = (winningTeam == state->teams) ? state->teams + 1 : state->teams;
     if (winningTeam) {
         winningTeam->points++;
         for (int i = 0; i < MAX_PLAYERS; i++) {
@@ -127,7 +126,7 @@ void endRound(GameState* state)
             if (!player) {
                 continue;
             }
-            if (state->controllers[i].player->team == winningTeam) {
+            if (player->team == winningTeam) {
                 pickupBall(player, &state->ball);
                 break;
             }

@@ -159,7 +159,7 @@ void drawUI(GameState* state)
     for (int i = 0; i < NUM_TEAMS; i++) {
         char buffer[100];
         sprintf(buffer, "Points: %d", state->teams[i].points);
-        DrawRectangle(0 + 150 * i, 0, 150, 40, state->teams[i].color);
-        DrawText(buffer, 10 + 150 * i, 0, 30, WHITE);
+        DrawRectangle(0 + 180 * i, 0, 180, 60, state->teams[i].color);
+        DrawText(buffer, 10 + 180 * i, 20, 30, WHITE);
     }
 }
