@@ -10,6 +10,7 @@ void mainloop(GameState* state, Camera3D camera);
 void setupTeams(GameState* state);
 Camera3D initializeGame(GameState* state);
 Player newPlayer();
+void drawUI(GameState* state);
 int main()
 {
     GameState state = { 0 };
@@ -142,6 +143,7 @@ void mainloop(GameState* state, Camera3D camera)
         BeginMode3D(camera);
         drawState(state, &camera, deltaTime);
         EndMode3D();
+        drawUI(state);
         EndDrawing();
     }
 }
@@ -150,4 +152,14 @@ Player newPlayer()
 {
     Player p = { 0 };
     return p;
+}
+
+void drawUI(GameState* state)
+{
+    for (int i = 0; i < NUM_TEAMS; i++) {
+        char buffer[100];
+        sprintf(buffer, "Points: %d", state->teams[i].points);
+        DrawRectangle(0 + 150 * i, 0, 150, 40, state->teams[i].color);
+        DrawText(buffer, 10 + 150 * i, 0, 30, WHITE);
+    }
 }

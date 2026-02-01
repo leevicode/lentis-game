@@ -4,14 +4,17 @@
 #include "player.h"
 #include "raylib.h"
 #include "raymath.h"
+#include "stdlib.h"
 #include "types.h"
 
 void updateState(GameState* state, float deltaTime);
 Bool canPlayerTouch(Player* player, Ball* ball);
 void throwBall(Ball* ball);
 void pickupBall(Player* player, Ball* ball);
+Team* resolveWinner(Team* teams, Ball* ball);
 Bool isInBounds(Vector3 p, BoundingBox b);
 void transformToInBounds(Vector3* p, BoundingBox b);
+void endRound(GameState* state);
 
 void updateState(GameState* state, float deltaTime)
 {
@@ -46,19 +49,25 @@ void updateState(GameState* state, float deltaTime)
         transformToInBounds(&player->position, player->team->playerBounds);
     }
     Vector3 previousPosition = ball->position;
+    BallState previousState = ball->state;
     updateBall(ball, deltaTime);
-    Ray ballTrajectory = (Ray) {
-        previousPosition,
-        Vector3Subtract(ball->position, previousPosition)
-    };
-    RayCollision collision = GetRayCollisionBox(ballTrajectory, state->net);
-    if (collision.hit && collision.distance < 1) { // check if the ray collision is close enough that the ball actually also hits
-        ball->motion = Vector3Add(
-            ball->motion,
-            Vector3Scale(
-                collision.normal,
-                Vector3Length(ball->motion) / 2.0));
-        ball->position = previousPosition;
+    if (ball->state == ON_GROUND && previousState != ON_GROUND) {
+        endRound(state);
+    }
+    if (ball->state == IN_AIR) {
+        Ray ballTrajectory = (Ray) {
+            previousPosition,
+            Vector3Subtract(ball->position, previousPosition)
+        };
+        RayCollision collision = GetRayCollisionBox(ballTrajectory, state->net);
+        if (collision.hit && collision.distance < 1) { // check if the ray collision is close enough that the ball actually also hits
+            ball->motion = Vector3Add(
+                ball->motion,
+                Vector3Scale(
+                    collision.normal,
+                    Vector3Length(ball->motion) / 2.0));
+            ball->position = previousPosition;
+        }
     }
 }
 
@@ -92,4 +101,47 @@ void transformToInBounds(Vector3* p, BoundingBox b)
     p->x = b.max.x >= p->x ? p->x : b.max.x;
     p->y = b.max.y >= p->y ? p->y : b.max.y;
     p->z = b.max.z >= p->z ? p->z : b.max.z;
+}
+
+Team* resolveWinner(Team* teams, Ball* ball)
+{
+    if (!ball->lastHit) {
+        return NULL;
+    }
+    Team* attackingTeam = ball->lastHit->team;
+    Team* defenderTeam = (teams == attackingTeam) ? teams + 1 : teams;
+    if (isInBounds(ball->position, defenderTeam->teamBounds)) {
+        return attackingTeam;
+    }
+    return defenderTeam;
+}
+
+void endRound(GameState* state)
+{
+    Team* winningTeam = resolveWinner(state->teams, &state->ball);
+    Team* losingTeam = (winningTeam == state->teams) ? state->teams + 1 : state->teams;
+    if (winningTeam) {
+        winningTeam->points++;
+        for (int i = 0; i < MAX_PLAYERS; i++) {
+            Player* player = state->controllers[i].player;
+            if (!player) {
+                continue;
+            }
+            if (state->controllers[i].player->team == winningTeam) {
+                pickupBall(player, &state->ball);
+                break;
+            }
+        }
+    }
+    state->ball.position = Vector3Zero();
+    for (int i = 0; i < MAX_PLAYERS; i++) {
+        Player* player = state->controllers[i].player;
+        if (!player) {
+            continue;
+        }
+        player->position = Vector3Scale(
+            Vector3Add(player->team->playerBounds.min, player->team->playerBounds.max),
+            0.5);
+        player->position.y = 0;
+    }
 }
